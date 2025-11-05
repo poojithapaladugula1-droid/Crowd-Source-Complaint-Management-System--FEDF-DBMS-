@@ -1,1 +1,8 @@
 node_modules
+
+# Ignore exported/downloaded cloud files
+Database Access _ Cloud_ MongoDB Cloud_files/
+Database Access _ Cloud_MongoDB Cloud_files/
+node_modules/
+.env
+
