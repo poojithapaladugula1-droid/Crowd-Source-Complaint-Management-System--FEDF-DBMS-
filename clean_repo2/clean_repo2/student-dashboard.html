@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - KLHResolve</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .complaint-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .complaint-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-in-progress { background: #cce7ff; color: #004085; }
+        .status-resolved { background: #d4edda; color: #155724; }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        .quick-actions {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .action-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+        .action-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .recent-activity {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .activity-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        .activity-complaint { background: #e3f2fd; color: #1976d2; }
+        .activity-update { background: #fff3e0; color: #f57c00; }
+        .activity-resolved { background: #e8f5e8; color: #388e3c; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-university me-2"></i>
+                KLHResolve - Student Portal
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user-circle me-1"></i>
+                    Welcome, <strong id="studentName">Student</strong>
+                </span>
+                <a class="nav-link" href="index.html" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+    <!-- Add this in the navigation bar or dashboard header -->
+<div class="navbar-text me-3">
+    <i class="fas fa-user-circle me-1"></i>
+    Welcome, <strong id="studentName">Student</strong>
+    <br>
+    <small class="text-light">
+        <i class="fas fa-calendar-alt me-1"></i>
+        <span id="academicInfo"></span>
+    </small>
+</div>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-tachometer-alt me-2"></i>Student Dashboard</h1>
+                    <p class="lead mb-0">Manage and track your complaints</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-light btn-lg" onclick="window.location.href='submit-complaint.html'">
+                        <i class="fas fa-plus-circle me-2"></i>Submit New Complaint
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="action-card" onclick="window.location.href='submit-complaint.html'">
+                        <i class="fas fa-edit"></i>
+                        <h5>Submit Complaint</h5>
+                        <p class="mb-0">Report a new issue</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="action-card" onclick="filterComplaints('Pending')">
+                        <i class="fas fa-clock"></i>
+                        <h5>Pending</h5>
+                        <p class="mb-0" id="pendingCount">0 complaints</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="action-card" onclick="filterComplaints('In Progress')">
+                        <i class="fas fa-spinner"></i>
+                        <h5>In Progress</h5>
+                        <p class="mb-0" id="progressCount">0 complaints</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="action-card" onclick="filterComplaints('Resolved')">
+                        <i class="fas fa-check-circle"></i>
+                        <h5>Resolved</h5>
+                        <p class="mb-0" id="resolvedCount">0 complaints</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Total Complaints</h5>
+                    <h2 class="text-primary" id="totalComplaints">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Pending</h5>
+                    <h2 class="text-warning" id="pendingComplaints">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>In Progress</h5>
+                    <h2 class="text-info" id="inProgressComplaints">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Resolved</h5>
+                    <h2 class="text-success" id="resolvedComplaints">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Complaints List -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>My Complaints</h4>
+                        <div>
+                            <select class="form-select form-select-sm" id="statusFilter" onchange="filterComplaints(this.value)">
+                                <option value="all">All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Resolved">Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="complaintsList">
+                            <!-- Content will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="col-md-4">
+                <div class="recent-activity">
+                    <h5 class="mb-4"><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                    <div id="activityList">
+                        <div class="activity-item">
+                            <div class="activity-icon activity-complaint">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">New Complaint Submitted</h6>
+                                <p class="text-muted mb-0">Hostel Maintenance Issue</p>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon activity-update">
+                                <i class="fas fa-sync"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Status Updated</h6>
+                                <p class="text-muted mb-0">Library complaint in progress</p>
+                                <small class="text-muted">1 day ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon activity-resolved">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Complaint Resolved</h6>
+                                <p class="text-muted mb-0">Canteen issue fixed</p>
+                                <small class="text-muted">3 days ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaint Details Modal -->
+    <div class="modal fade" id="complaintDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-file-alt me-2"></i>Complaint Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="complaintDetailsContent">
+                    <!-- Details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentStudentId = '';
+        let allComplaints = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            if (!currentUser.identifier || currentUser.type !== 'student') {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentStudentId = currentUser.identifier;
+            document.getElementById('studentName').textContent = currentStudentId;
+            
+            loadComplaints();
+            setupLogout();
+        });
+
+        function loadComplaints() {
+            // Get complaints for this specific student only
+            const studentComplaints = JSON.parse(localStorage.getItem(`complaints_${currentStudentId}`) || '[]');
+            allComplaints = studentComplaints;
+            
+            updateStatistics(studentComplaints);
+            displayComplaints(studentComplaints);
+        }
+
+        function displayComplaints(complaints) {
+            const complaintsList = document.getElementById('complaintsList');
+            
+            if (complaints.length === 0) {
+                complaintsList.innerHTML = `
+                    <div class="empty-state">
+                        <div>📝</div>
+                        <h4>No Complaints Yet</h4>
+                        <p class="text-muted">You haven't submitted any complaints yet.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='submit-complaint.html'">
+                            Submit Your First Complaint
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            complaintsList.innerHTML = complaints.map(complaint => `
+                <div class="complaint-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-2">${complaint.title}</h5>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-tag me-1"></i>${complaint.category} • 
+                                    <i class="fas fa-building me-1"></i>${complaint.building}
+                                </p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>Submitted: ${complaint.date}
+                                </small>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="status-badge status-${complaint.status.replace(' ', '-').toLowerCase()}">
+                                    ${complaint.status}
+                                </span>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-flag me-1"></i>Priority: ${complaint.priority}
+                                    </small>
+                                </div>
+                                ${complaint.assignedTo ? `
+                                <div class="mt-1">
+                                    <small class="text-muted">
+                                        <i class="fas fa-user-tie me-1"></i>${complaint.assignedTo}
+                                    </small>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button class="btn btn-outline-primary btn-sm" onclick="viewComplaintDetails('${complaint.id}')">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStatistics(complaints) {
+            const total = complaints.length;
+            const pending = complaints.filter(c => c.status === 'Pending').length;
+            const inProgress = complaints.filter(c => c.status === 'In Progress').length;
+            const resolved = complaints.filter(c => c.status === 'Resolved').length;
+
+            document.getElementById('totalComplaints').textContent = total;
+            document.getElementById('pendingComplaints').textContent = pending;
+            document.getElementById('inProgressComplaints').textContent = inProgress;
+            document.getElementById('resolvedComplaints').textContent = resolved;
+
+            // Update quick action counts
+            document.getElementById('pendingCount').textContent = `${pending} complaint${pending !== 1 ? 's' : ''}`;
+            document.getElementById('progressCount').textContent = `${inProgress} complaint${inProgress !== 1 ? 's' : ''}`;
+            document.getElementById('resolvedCount').textContent = `${resolved} complaint${resolved !== 1 ? 's' : ''}`;
+        }
+
+        function filterComplaints(status) {
+            document.getElementById('statusFilter').value = status;
+            
+            let filteredComplaints = allComplaints;
+            if (status !== 'all') {
+                filteredComplaints = allComplaints.filter(complaint => complaint.status === status);
+            }
+            
+            displayComplaints(filteredComplaints);
+        }
+
+        function viewComplaintDetails(complaintId) {
+            const complaint = allComplaints.find(c => c.id === complaintId);
+            if (!complaint) return;
+
+            const modalContent = document.getElementById('complaintDetailsContent');
+            modalContent.innerHTML = `
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h4>${complaint.title}</h4>
+                        <p class="text-muted">Complaint ID: ${complaint.id}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="status-badge status-${complaint.status.replace(' ', '-').toLowerCase()} fs-6">
+                            ${complaint.status}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
+                        <p><strong>Category:</strong> ${complaint.category}</p>
+                        <p><strong>Priority:</strong> <span class="badge bg-${getPriorityBadgeClass(complaint.priority)}">${complaint.priority}</span></p>
+                        <p><strong>Submitted:</strong> ${complaint.date}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-map-marker-alt me-2"></i>Location Details</h6>
+                        <p><strong>Building:</strong> ${complaint.building}</p>
+                        <p><strong>Floor/Area:</strong> ${complaint.floor}</p>
+                        <p><strong>Specific Location:</strong> ${complaint.specificLocation}</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6><i class="fas fa-align-left me-2"></i>Description</h6>
+                    <div class="p-3 bg-light rounded">
+                        ${complaint.description}
+                    </div>
+                </div>
+
+                ${complaint.photo ? `
+                <div class="mb-4">
+                    <h6><i class="fas fa-camera me-2"></i>Attached Photo</h6>
+                    <img src="${complaint.photo}" alt="Complaint photo" class="img-fluid rounded" style="max-height: 300px;">
+                </div>
+                ` : ''}
+
+                ${complaint.resolution ? `
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-check-circle me-2"></i>Resolution Details</h6>
+                    <p class="mb-2"><strong>Status:</strong> ${complaint.status}</p>
+                    <p class="mb-2"><strong>Assigned To:</strong> ${complaint.assignedTo || 'Not assigned'}</p>
+                    ${complaint.lastUpdated ? `<p class="mb-2"><strong>Last Updated:</strong> ${complaint.lastUpdated}</p>` : ''}
+                    <div class="mt-2 p-2 bg-white rounded">
+                        ${complaint.resolution}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${!complaint.resolution && complaint.status !== 'Pending' ? `
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>Current Status</h6>
+                    <p class="mb-1"><strong>Status:</strong> ${complaint.status}</p>
+                    ${complaint.assignedTo ? `<p class="mb-0"><strong>Assigned To:</strong> ${complaint.assignedTo}</p>` : ''}
+                </div>
+                ` : ''}
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('complaintDetailsModal'));
+            modal.show();
+        }
+
+        function getPriorityBadgeClass(priority) {
+            const classes = {
+                'Low': 'secondary',
+                'Medium': 'primary',
+                'High': 'warning',
+                'Urgent': 'danger'
+            };
+            return classes[priority] || 'secondary';
+        }
+
+        function setupLogout() {
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+        // Display academic information
+function displayAcademicInfo() {
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+    const academicInfo = document.getElementById('academicInfo');
+    
+    if (currentUser.academicYear && currentUser.semester) {
+        academicInfo.textContent = `${currentUser.academicYear} • ${currentUser.semester}`;
+    }
+}
+
+// Call this function in the DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    displayAcademicInfo();
+    // ... existing code ...
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLHResolve - College Complaint Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Notification System -->
+    <div class="notification-bell">
+        <button class="btn btn-light position-relative shadow-sm" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">0</span>
+        </button>
+    </div>
+
+    <!-- Notification Dropdown -->
+    <div class="notification-dropdown">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0"><i class="fas fa-bell me-2"></i>Notifications</h6>
+            <button class="btn btn-sm btn-outline-secondary" id="markAllRead">
+                <i class="fas fa-check-double me-1"></i>Mark all read
+            </button>
+        </div>
+        <div id="notificationList">
+            <div class="text-center text-muted py-3">
+                <i class="fas fa-bell-slash fa-2x mb-2"></i>
+                <p>No new notifications</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="container-fluid h-100">
+            <div class="row h-100 align-items-center">
+                <!-- Logo Side (Left) -->
+                <div class="col-md-6 logo-side">
+                    <div class="logo-container text-center">
+                        <div class="college-logo-placeholder">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h1 class="brand-title mt-4">KLHResolve</h1>
+                        <p class="brand-subtitle">College Complaint Management System</p>
+                        <div class="system-stats mt-4">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h4 class="text-white mb-1" id="totalResolved">1,247</h4>
+                                    <small class="text-light">Issues Resolved</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-white mb-1" id="activeUsers">2,856</h4>
+                                    <small class="text-light">Active Users</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-white mb-1" id="satisfactionRate">94%</h4>
+                                    <small class="text-light">Satisfaction</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Side (Right) -->
+                <div class="col-md-6 content-side">
+                    <div class="welcome-content">
+                        <div class="features-section">
+                            <h3 class="mb-4"><i class="fas fa-rocket me-2"></i>Streamlined Issue Resolution</h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Submit complaints with ease</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Track complaint status in real-time</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Photo evidence attachment</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Quick response from staff</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Transparent resolution process</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Mobile-friendly interface</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Instant notifications</li>
+                            </ul>
+                        </div>
+
+                        <div class="welcome-actions">
+                            <button class="btn btn-primary btn-lg get-started-btn w-100 mb-3" id="getStartedBtn">
+                                <i class="fas fa-arrow-right me-2"></i>Get Started
+                            </button>
+                            <div class="text-center">
+                                <small class="text-light opacity-75">
+                                    <i class="fas fa-shield-alt me-1"></i>Secure & Private • 
+                                    <i class="fas fa-mobile-alt me-1"></i>Mobile Optimized
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="back-btn-container">
+            <button class="btn btn-outline-secondary" id="backToWelcome">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </button>
+        </div>
+        
+        <div class="container-fluid">
+            <div class="row min-vh-100">
+                <!-- Login Forms -->
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="login-container">
+                        <!-- Security Badge -->
+                        <div class="security-badge text-center mb-4">
+                            <i class="fas fa-lock text-success me-2"></i>
+                            <span class="text-muted">Secure Login • Encrypted Connection</span>
+                        </div>
+
+                        <!-- Login Tabs -->
+                        <ul class="nav nav-pills mb-4" id="loginTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="student-tab" data-bs-toggle="pill" 
+                                        data-bs-target="#student" type="button" role="tab">
+                                    <i class="fas fa-graduation-cap me-2"></i> Student Login
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="staff-tab" data-bs-toggle="pill" 
+                                        data-bs-target="#staff" type="button" role="tab">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i> Staff Login
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="loginTabsContent">
+                            <!-- Student Login Form -->
+                            <div class="tab-pane fade show active" id="student" role="tabpanel">
+                                <h3 class="text-center mb-4"><i class="fas fa-graduation-cap me-2"></i>Student Portal</h3>
+                                <form id="studentLoginForm">
+                                    <div class="mb-3">
+                                        <label for="studentId" class="form-label">
+                                            <i class="fas fa-id-card me-1"></i>Student ID
+                                        </label>
+                                        <input type="text" class="form-control" id="studentId" 
+                                               placeholder="Enter 10-digit Student ID (e.g., 2110012345)" 
+                                               required 
+                                               maxlength="10"
+                                               pattern="2[0-9]{9}"
+                                               title="Please enter a valid 10-digit Student ID starting with 2">
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>Format: 10 digits starting with 2 (e.g., 2110012345)
+                                        </small>
+                                        <div class="invalid-feedback" id="studentIdError">
+                                            Please enter a valid 10-digit Student ID starting with 2
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 password-container">
+                                        <label for="studentPassword" class="form-label">
+                                            <i class="fas fa-lock me-1"></i>Password
+                                        </label>
+                                        <input type="password" class="form-control" id="studentPassword" 
+                                               placeholder="Enter your password" required
+                                               minlength="6">
+                                        <button type="button" class="password-toggle" id="studentPasswordToggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <div class="password-strength mt-2">
+                                            <div class="progress" style="height: 4px;">
+                                                <div class="progress-bar" id="passwordStrengthBar" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Add these fields in the Student Login Form after the password field -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label for="academicYear" class="form-label required-field">
+            <i class="fas fa-calendar-alt me-1"></i>Academic Year
+        </label>
+        <select class="form-select" id="academicYear" required>
+            <option value="">Select Academic Year</option>
+            <!-- Options will be populated by JavaScript -->
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label for="semester" class="form-label required-field">
+            <i class="fas fa-book me-1"></i>Semester
+        </label>
+        <select class="form-select" id="semester" required>
+            <option value="">Select Semester</option>
+            <option value="Odd Semester">Odd Semester</option>
+            <option value="Even Semester">Even Semester</option>
+        </select>
+    </div>
+</div>
+                                    
+                                    <!-- CAPTCHA Section -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-shield-alt me-1"></i>Security Verification
+                                        </label>
+                                        <div class="captcha-container">
+                                            <div class="captcha-display bg-light border rounded p-2 text-center mb-2">
+                                                <span id="captchaText" class="fw-bold fs-5"></span>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="studentCaptchaInput" 
+                                                       placeholder="Enter the code above" required>
+                                                <button type="button" class="btn btn-outline-secondary" id="refreshStudentCaptcha" title="Refresh CAPTCHA">
+                                                    <i class="fas fa-redo"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-robot me-1"></i>Type the characters to verify you're human
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="rememberStudent">
+                                        <label class="form-check-label" for="rememberStudent">
+                                            <i class="fas fa-remember me-1"></i>Remember me on this device
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary" id="studentLoginBtn">
+                                            <span class="button-text">
+                                                <i class="fas fa-sign-in-alt me-2"></i>Login to Student Portal
+                                            </span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <a href="#" class="text-muted text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                                            <i class="fas fa-key me-1"></i>Forgot Password?
+                                        </a>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>Ensure you're on the official KLH portal
+                                            </small>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Staff Login Form -->
+                            <div class="tab-pane fade" id="staff" role="tabpanel">
+                                <h3 class="text-center mb-4"><i class="fas fa-chalkboard-teacher me-2"></i>Staff Portal</h3>
+                                <form id="staffLoginForm">
+                                    
+                                    <div class="mb-3">
+                                        <label for="staffEmail" class="form-label">
+                                            <i class="fas fa-envelope me-1"></i>College Email Address
+                                        </label>
+                                        <input type="email" class="form-control" id="staffEmail" 
+                                               placeholder="Enter your college id" required
+                                               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-at me-1"></i>Use your official college id
+                                        </small>
+                                    </div>
+                                    <div class="mb-3 password-container">
+                                        <label for="staffPassword" class="form-label">
+                                            <i class="fas fa-lock me-1"></i>Password
+                                        </label>
+                                        <input type="password" class="form-control" id="staffPassword" 
+                                               placeholder="Enter your password" required
+                                               minlength="6">
+                                        <button type="button" class="password-toggle" id="staffPasswordToggle">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="department" class="form-label">
+                                            <i class="fas fa-building me-1"></i>Department
+                                        </label>
+                                        <select class="form-select" id="department" required>
+                                            <option value="">Select Your Department</option>
+                                            <option value="hostel">Hostel Management</option>
+                                            <option value="academics">Academics & Faculty</option>
+                                            <option value="library">Library Services</option>
+                                            <option value="infrastructure">Infrastructure & Facilities</option>
+                                            <option value="administration">Administration</option>
+                                            <option value="other">Other Department</option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>Select the department you belong to
+                                        </small>
+                                    </div>
+                                    <div class="mb-3">
+   
+                                    
+                                    <!-- CAPTCHA Section -->
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-shield-alt me-1"></i>Security Verification
+                                        </label>
+                                        <div class="captcha-container">
+                                            <div class="captcha-display bg-light border rounded p-2 text-center mb-2">
+                                                <span id="staffCaptchaText" class="fw-bold fs-5"></span>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="staffCaptchaInput" 
+                                                       placeholder="Enter the code above" required>
+                                                <button type="button" class="btn btn-outline-secondary" id="refreshStaffCaptcha" title="Refresh CAPTCHA">
+                                                    <i class="fas fa-redo"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">
+                                                <i class="fas fa-robot me-1"></i>Type the characters to verify you're human
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="rememberStaff">
+                                        <label class="form-check-label" for="rememberStaff">
+                                            <i class="fas fa-remember me-1"></i>Remember me on this device
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-success" id="staffLoginBtn">
+                                            <span class="button-text">
+                                                <i class="fas fa-sign-in-alt me-2"></i>Login to Staff Portal
+                                            </span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <a href="#" class="text-muted text-decoration-none">
+                                            <i class="fas fa-key me-1"></i>Forgot Password?
+                                        </a>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>Authorized access only
+                                            </small>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="system-status mt-4 p-3 bg-light rounded">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-circle text-success me-1"></i>All Systems Operational
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>Last updated: Just now
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-key me-2"></i>Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="forgotPasswordForm">
+                        <div class="mb-3">
+                            <label for="studentIdForgot" class="form-label">
+                                <i class="fas fa-id-card me-1"></i>Student ID
+                            </label>
+                            <input type="text" class="form-control" id="studentIdForgot" 
+                                   placeholder="Enter your 10-digit Student ID" 
+                                   required 
+                                   maxlength="10"
+                                   pattern="2[0-9]{9}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="collegeEmail" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>College Email ID
+                            </label>
+                            <input type="email" class="form-control" id="collegeEmail" 
+                                   placeholder="Enter your college email address" 
+                                   required
+                                   pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>Enter your official college email address
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            A password reset link will be sent to your college email address. The link will expire in 1 hour.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="sendResetLinkBtn">
+                        <i class="fas fa-paper-plane me-1"></i>Send Reset Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Reset Success Modal -->
+    <div class="modal fade" id="resetSuccessModal" tabindex="-1">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-success"><i class="fas fa-check-circle me-2"></i>Reset Link Sent</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-envelope-open-text text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5>Check Your Email</h5>
+                    <p class="text-muted">We've sent a password reset link to your college email address.</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Please check your spam folder if you don't see the email within 5 minutes.
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                        <i class="fas fa-check me-1"></i>Okay, I'll check my email
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Chat Widget -->
+    <div class="chat-widget">
+        <button class="btn btn-primary rounded-circle p-3 shadow-lg" id="chatToggle" style="width: 60px; height: 60px;">
+            <i class="fas fa-comments"></i>
+        </button>
+        
+        <div class="chat-container">
+            <div class="chat-header bg-primary text-white p-3 rounded-top d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-0"><i class="fas fa-headset me-2"></i>Support Chat</h6>
+                    <small class="opacity-75">We're here to help you</small>
+                </div>
+                <button class="btn btn-sm btn-light" id="closeChat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages p-3">
+                <div class="chat-welcome-message">
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-robot me-1"></i>KLH Support Bot</strong>
+                        <p class="mb-0 mt-2">Hello! I'm here to help you with any questions about the complaint system. How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input p-3 border-top">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="chatMessage" placeholder="Type your message...">
+                    <button class="btn btn-primary" id="sendChatMessage">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>Typical response time: 2-5 minutes
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
