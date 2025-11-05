@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint - KLHResolve</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .complaint-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .photo-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: none;
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .form-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .form-stepper::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .step.active .step-number {
+            background: var(--primary-color);
+            color: white;
+        }
+        .step.completed .step-number {
+            background: var(--success-color);
+            color: white;
+        }
+        .step-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="student-dashboard.html">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    Submit New Complaint
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Complaint Form -->
+    <div class="container complaint-form-container">
+        <!-- Form Stepper -->
+        <div class="form-stepper">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Basic Info</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Location</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Details</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-number">4</div>
+                <div class="step-label">Review</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="mb-4"><i class="fas fa-edit me-2"></i>Submit New Complaint</h2>
+            
+            <form id="complaintForm">
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" id="step1-content">
+                    <h4 class="mb-4"><i class="fas fa-info-circle me-2"></i>Basic Information</h4>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="studentName" class="form-label required-field">
+                                <i class="fas fa-user me-1"></i>Student Name
+                            </label>
+                            <input type="text" class="form-control" id="studentName" 
+                                   placeholder="Enter your full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="rollNumber" class="form-label required-field">
+                                <i class="fas fa-id-card me-1"></i>Roll Number
+                            </label>
+                            <input type="text" class="form-control" id="rollNumber" 
+                                   placeholder="Enter your roll number" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="category" class="form-label required-field">
+                                <i class="fas fa-tags me-1"></i>Category
+                            </label>
+                            <select class="form-select" id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Hostel Maintenance">Hostel Maintenance</option>
+                                <option value="Academics">Academics</option>
+                                <option value="Library">Library</option>
+                                <option value="Canteen">Canteen</option>
+                                <option value="Sports Facilities">Sports Facilities</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Administration">Administration</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="priority" class="form-label required-field">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Priority
+                            </label>
+                            <select class="form-select" id="priority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div></div>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                            Next <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Location Details -->
+                <div class="form-step" id="step2-content">
+                    <h4 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i>Location Details</h4>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="building" class="form-label required-field">
+                                <i class="fas fa-building me-1"></i>Building
+                            </label>
+                            <select class="form-select" id="building" required>
+                                <option value="">Select Building</option>
+                                <option value="Main Building">Main Building</option>
+                                <option value="Library Building">Library Building</option>
+                                <option value="Hostel (Girls)">Hostel (Girls)</option>
+                                <option value="Hostel (Boys)">Hostel (Boys)</option>
+                                <option value="Sports Ground">Sports Ground</option>
+                                <option value="Canteen Building">Canteen Building</option>
+                                <option value="Administration Block">Administration Block</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="floor" class="form-label required-field">
+                                <i class="fas fa-layer-group me-1"></i>Floor / Area
+                            </label>
+                            <select class="form-select" id="floor" required>
+                                <option value="">Select Floor/Area</option>
+                                <!-- Options will be populated based on building selection -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="specificLocation" class="form-label required-field">
+                            <i class="fas fa-map-pin me-1"></i>Specific Location
+                        </label>
+                        <input type="text" class="form-control" id="specificLocation" 
+                               placeholder="e.g., Room 205, Library Reading Area, Canteen Counter 2, etc." required>
+                        <div class="form-text">Please provide the exact location where the issue exists</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left me-2"></i>Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                            Next <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Complaint Details -->
+                <div class="form-step" id="step3-content">
+                    <h4 class="mb-4"><i class="fas fa-align-left me-2"></i>Complaint Details</h4>
+                    
+                    <div class="mb-4">
+                        <label for="complaintTitle" class="form-label required-field">
+                            <i class="fas fa-heading me-1"></i>Complaint Title
+                        </label>
+                        <input type="text" class="form-control" id="complaintTitle" 
+                               placeholder="Brief description of the problem" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="complaintDescription" class="form-label required-field">
+                            <i class="fas fa-align-left me-1"></i>Detailed Description
+                        </label>
+                        <textarea class="form-control" id="complaintDescription" rows="5" 
+                                  placeholder="Please provide detailed information about the issue, when it started, how it affects you, etc." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="complaintPhoto" class="form-label">
+                            <i class="fas fa-camera me-1"></i>Upload Photo (Optional)
+                        </label>
+                        <input type="file" class="form-control" id="complaintPhoto" accept="image/*">
+                        <div class="form-text">Upload a photo showing the problem (Max: 5MB, Supported: JPG, PNG)</div>
+                        
+                        <!-- Photo Preview -->
+                        <div class="mt-3">
+                            <img id="photoPreview" class="photo-preview" alt="Photo preview">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left me-2"></i>Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                            Next <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review and Submit -->
+                <div class="form-step" id="step4-content">
+                    <h4 class="mb-4"><i class="fas fa-check-circle me-2"></i>Review & Submit</h4>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Please review your complaint details before submitting. You can go back to make changes if needed.
+                    </div>
+
+                    <div class="review-section">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Student Name:</strong>
+                                <p id="reviewStudentName" class="text-muted"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Roll Number:</strong>
+                                <p id="reviewRollNumber" class="text-muted"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Category:</strong>
+                                <p id="reviewCategory" class="text-muted"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Priority:</strong>
+                                <p id="reviewPriority" class="text-muted"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Building:</strong>
+                                <p id="reviewBuilding" class="text-muted"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Floor/Area:</strong>
+                                <p id="reviewFloor" class="text-muted"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Specific Location:</strong>
+                            <p id="reviewSpecificLocation" class="text-muted"></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Complaint Title:</strong>
+                            <p id="reviewTitle" class="text-muted"></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Description:</strong>
+                            <p id="reviewDescription" class="text-muted border p-2 rounded"></p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep(3)">
+                            <i class="fas fa-arrow-left me-2"></i>Previous
+                        </button>
+                        <button type="button" class="btn btn-success" id="submitComplaintBtn">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Complaint
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentStep = 1;
+        let currentStudentId = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            if (!currentUser.identifier || currentUser.type !== 'student') {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentStudentId = currentUser.identifier;
+            
+            // Initialize building and floor relationship
+            initializeBuildingFloors();
+            
+            // Photo preview functionality
+            document.getElementById('complaintPhoto').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById('photoPreview');
+                
+                if (file) {
+                    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('Please upload a valid image file (JPEG or PNG only)');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size should be less than 5MB');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            document.getElementById('submitComplaintBtn').addEventListener('click', submitComplaint);
+        });
+
+        function initializeBuildingFloors() {
+            const buildingSelect = document.getElementById('building');
+            const floorSelect = document.getElementById('floor');
+            
+            buildingSelect.addEventListener('change', function() {
+                const building = this.value;
+                
+                floorSelect.innerHTML = '<option value="">Select Floor/Area</option>';
+                
+                const floors = {
+                    'Main Building': ['Ground Floor', 'First Floor', 'Second Floor'],
+                    'Library Building': ['Ground Floor', 'First Floor', 'Second Floor'],
+                    'Hostel (Girls)': ['Ground Floor', 'First Floor', 'Second Floor', 'Third Floor'],
+                    'Hostel (Boys)': ['Ground Floor', 'First Floor', 'Second Floor', 'Third Floor'],
+                    'Sports Ground': ['Main Ground', 'Indoor Stadium', 'Swimming Pool Area', 'Gymnasium'],
+                    'Canteen Building': ['Ground Floor', 'First Floor'],
+                    'Administration Block': ['Ground Floor', 'First Floor', 'Second Floor']
+                };
+                
+                if (floors[building]) {
+                    floors[building].forEach(floor => {
+                        const option = document.createElement('option');
+                        option.value = floor;
+                        option.textContent = floor;
+                        floorSelect.appendChild(option);
+                    });
+                } else {
+                    const defaultFloors = ['Ground Floor', 'First Floor', 'Second Floor', 'Outside Campus'];
+                    defaultFloors.forEach(floor => {
+                        const option = document.createElement('option');
+                        option.value = floor;
+                        option.textContent = floor;
+                        floorSelect.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        function nextStep(step) {
+            // Validate current step before proceeding
+            if (!validateStep(currentStep)) {
+                return;
+            }
+            
+            // Hide current step
+            document.getElementById(`step${currentStep}-content`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            // Show next step
+            currentStep = step;
+            document.getElementById(`step${currentStep}-content`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            // If moving to review step, populate review data
+            if (step === 4) {
+                populateReviewData();
+            }
+        }
+
+        function prevStep(step) {
+            // Hide current step
+            document.getElementById(`step${currentStep}-content`).classList.remove('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            // Show previous step
+            currentStep = step;
+            document.getElementById(`step${currentStep}-content`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+            
+            switch(step) {
+                case 1:
+                    const studentName = document.getElementById('studentName');
+                    const rollNumber = document.getElementById('rollNumber');
+                    const category = document.getElementById('category');
+                    const priority = document.getElementById('priority');
+                    
+                    if (!studentName.value.trim()) {
+                        studentName.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    if (!rollNumber.value.trim()) {
+                        rollNumber.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    if (!category.value) {
+                        category.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    if (!priority.value) {
+                        priority.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    break;
+                    
+                case 2:
+                    const building = document.getElementById('building');
+                    const floor = document.getElementById('floor');
+                    const specificLocation = document.getElementById('specificLocation');
+                    
+                    if (!building.value) {
+                        building.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    if (!floor.value) {
+                        floor.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    if (!specificLocation.value.trim()) {
+                        specificLocation.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    break;
+                    
+                case 3:
+                    const title = document.getElementById('complaintTitle');
+                    const description = document.getElementById('complaintDescription');
+                    
+                    if (!title.value.trim()) {
+                        title.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    if (!description.value.trim()) {
+                        description.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                    break;
+            }
+            
+            return isValid;
+        }
+
+        function populateReviewData() {
+            document.getElementById('reviewStudentName').textContent = document.getElementById('studentName').value;
+            document.getElementById('reviewRollNumber').textContent = document.getElementById('rollNumber').value;
+            document.getElementById('reviewCategory').textContent = document.getElementById('category').value;
+            document.getElementById('reviewPriority').textContent = document.getElementById('priority').value;
+            document.getElementById('reviewBuilding').textContent = document.getElementById('building').value;
+            document.getElementById('reviewFloor').textContent = document.getElementById('floor').value;
+            document.getElementById('reviewSpecificLocation').textContent = document.getElementById('specificLocation').value;
+            document.getElementById('reviewTitle').textContent = document.getElementById('complaintTitle').value;
+            document.getElementById('reviewDescription').textContent = document.getElementById('complaintDescription').value;
+        }
+
+        function submitComplaint() {
+            const complaintData = {
+                id: 'COMP-' + Date.now(),
+                studentId: currentStudentId,
+                studentName: document.getElementById('studentName').value,
+                rollNumber: document.getElementById('rollNumber').value,
+                category: document.getElementById('category').value,
+                priority: document.getElementById('priority').value,
+                building: document.getElementById('building').value,
+                floor: document.getElementById('floor').value,
+                specificLocation: document.getElementById('specificLocation').value,
+                title: document.getElementById('complaintTitle').value,
+                description: document.getElementById('complaintDescription').value,
+                status: 'Pending',
+                date: new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }),
+                timestamp: new Date().toISOString()
+            };
+            
+            const photoFile = document.getElementById('complaintPhoto').files[0];
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    complaintData.photo = e.target.result;
+                    saveComplaint(complaintData);
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                saveComplaint(complaintData);
+            }
+        }
+
+        function saveComplaint(complaintData) {
+            // Save to student-specific storage
+            const studentComplaints = JSON.parse(localStorage.getItem(`complaints_${currentStudentId}`) || '[]');
+            studentComplaints.unshift(complaintData);
+            localStorage.setItem(`complaints_${currentStudentId}`, JSON.stringify(studentComplaints));
+            
+            // Also save to all complaints for staff view
+            const allComplaints = JSON.parse(localStorage.getItem('allComplaints') || '[]');
+            allComplaints.unshift(complaintData);
+            localStorage.setItem('allComplaints', JSON.stringify(allComplaints));
+            
+            alert('Complaint submitted successfully! It will now be reviewed by staff.');
+            window.location.href = 'student-dashboard.html';
+        }
+
+        // Remove validation styles when user starts typing
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+    </script>
+</body>
+</html>
